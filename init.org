@@ -1,0 +1,552 @@
+* My Emacs literate configuration
+
+This GitHub repository contains my Emacs configuration in literary form. I find this a more suitable format for exposing and explaining the configuration of a text-editing application such as Emacs.
+
+All Emacs LISP expressions in this document were written for Emacs version 29.4.
+
+** Why does this repository exist?
+
+I use [[https:nixos.org][NixOS]] as my main operating system, my [[https:nixos.org][NixOS]] configuration is very modularized, which includes [[https:github.com/theobori/nixos-configuration/blob/main/modules/home/editors/emacs][Emacs configuration]]. It is written solely through Nix expressions, which are themselves written through the [[https:nixos.org][NixOS]] Emacs home-manager module.
+
+The aim of this repository is to be able to use my configuration on any non-Nix distribution, i.e. without needing to build a derivation or evaluate NixOS modules.
+
+It is therefore a KISS way of distributing my configuration.
+
+** How do I load and install the configuration?
+
+All you need is Emacs and the GNU Make program and the following command line.
+
+#+begin_src bash
+make install
+#+end_src
+
+** How does it work?
+
+All the code blocks in this Org file containing Emacs LISP expressions will be collected and written to a =init.el= file. This file will be compiled by the Emacs application and the result of the compilation will be written in a file =init.elc= and installed in the directory =~/.emacs.d=.
+
+** My configuration
+
+This section describes my entire configuration.
+
+*** Package management
+
+I use [[https:github.com/radian-software/straight.el][straight.el]] as my main package manager. This makes it easier for me to retrieve packages that aren't in the official package archives. It's still possible to retrieve packages from [[https:melpa.org][MELPA]] and [[https:elpa.gnu.org][ELPA]] but from [[https:github.com/radian-software/straight.el][straight.el]].
+
+The package greatly facilitates my package management and allows me to have an even more reproducible and detailed configuration.
+
+#+begin_src emacs-lisp
+;; Bootstrap the straight.el package
+;; It download the install the install.el file in my .emacs.d directory if it does not exist
+(defvar bootstrap-version)
+
+(setq straight-recipes-gnu-elpa-use-mirror t)
+(setq straight-recipes-nongnu-elpa-use-mirror t)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+      (url-retrieve-synchronously
+      "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+      'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+;; Use straight.el for use-package expressions
+(straight-use-package 'use-package)
+;; Use the :straight t argument pair by default with use-package
+(setq straight-use-package-by-default t)
+;; Use the built-in Orn
+(straight-use-package '(org :type built-in))
+#+end_src
+
+*** General
+
+Below is the general configuration of some general Emacs behaviors and customizations.
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+(show-paren-mode t)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Remove the menu bar
+(menu-bar-mode -1)
+
+(if (display-graphic-p)
+    (progn
+      ;; Resize small font on the GUI Emacs application
+      (set-face-attribute 'default nil :height 105)
+
+      ;; Annoying displayed UI elements
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)))
+
+(global-display-line-numbers-mode)
+(setq standard-indent 2)
+(setq display-line-numbers-type 'relative)
+
+;; See https://snarfed.org/gnu_emacs_backup_files
+(custom-set-variables
+ '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
+ '(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
+
+(make-directory "~/.emacs.d/autosaves/" t)
+
+(setq org-link-file-path-type 'relative)
+
+;; See https://themkat.net/2025/03/25/simple_smoother_emacs_scrolling.html
+(setq scroll-conservatively 10
+      scroll-margin 15)
+
+(setq inhibit-startup-screen t)
+
+;; Run Emacs server
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+#+end_src
+
+*** Style
+
+#+begin_src emacs-lisp
+(defvar base16-dracula-theme-colors
+  '(:base00 "#282936"
+    :base01 "#3a3c4e"
+    :base02 "#4d4f68"
+    :base03 "#626483"
+    :base04 "#62d6e8"
+    :base05 "#e9e9f4"
+    :base06 "#f1f2f8"
+    :base07 "#f7f7fb"
+    :base08 "#ea51b2"
+    :base09 "#b45bcf"
+    :base0A "#00f769"
+    :base0B "#ebff87"
+    :base0C "#a1efe4"
+    :base0D "#62d6e8"
+    :base0E "#b45bcf"
+    :base0F "#00f769")
+  "All colors for Base16 dracula are defined here.")
+
+;; Define the theme
+(deftheme base16-dracula)
+
+(use-package base16-theme
+  :custom
+  (base16-theme-256-color-source 'colors)
+  :config
+  ;; Add all the faces to the theme
+  (base16-theme-define 'base16-dracula base16-dracula-theme-colors)
+  ;; Mark the theme as provided
+  (provide-theme 'base16-dracula)
+  ;; Load the theme
+  (load-theme 'base16-dracula t))
+
+;; Set font
+(set-face-attribute 'default t :font (font-spec :family "MonoLisa Nerd Font" :size 11.000000))
+
+;; Set opacity
+(add-to-list 'default-frame-alist '(alpha-background . 100))
+#+end_src
+
+*** Auto save
+
+#+begin_src emacs-lisp
+(use-package auto-save
+  :straight (auto-save :type git :host github :repo "manateelazycat/auto-save")
+  :config
+  (auto-save-enable)
+  :custom
+  (auto-save-silent t)
+  (auto-save-delete-trailing-whitespace t)
+  (auto-save-disable-predicates
+  '((lambda ()
+      (string-suffix-p
+       "gpg"
+       (file-name-extension (buffer-name)) t)))))
+#+end_src
+
+*** Dashboard
+
+#+begin_src emacs-lisp
+(use-package all-the-icons)
+(use-package dashboard
+  :after (all-the-icons)
+  :init (dashboard-setup-startup-hook)
+  :if (or (display-graphic-p) (and (not (daemonp))
+	  (= (length command-line-args) 1)))
+  :custom
+  (dashboard-startup-banner 'logo)
+  (dashboard-center-content t)
+  (dashboard-set-navigator t)
+  (dashboard-icon-type 'all-the-icons)
+  (dashboard-items '((projects . 5)
+	      (recents  . 5)))
+  (dashboard-set-file-icons t)
+  (dashboard-projects-backend 'project-el)
+  :config
+  (setq initial-buffer-choice (lambda ()
+			  (get-buffer-create "*dashboard*")
+			  (dashboard-refresh-buffer))))
+#+end_src
+
+*** Dired
+
+#+begin_src emacs-lisp
+(use-package all-the-icons-dired)
+
+(use-package dired
+  :ensure nil
+  :straight nil
+  :after (all-the-icons-dired dired-collapse)
+  :defer 1
+  :commands (dired dired-jump)
+  :custom
+  (dired-kill-when-opening-new-dired-buffer t) ;; It prevents having hundreds useless buffers
+  :hook
+  (dired-mode .
+    (lambda ()
+      (interactive)
+      (all-the-icons-dired-mode 1)
+      (dired-collapse)
+      (hl-line-mode 1))))
+
+(use-package dired-collapse)
+(declare-function dired-collapse "dired-collapse")
+#+end_src
+
+*** Doom-modeline
+
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+#+end_src
+
+*** Ivy
+
+#+begin_src emacs-lisp
+(use-package counsel
+  :demand t
+  :bind (("M-x" . counsel-M-x)
+     ("C-x b" . counsel-ibuffer)
+     ("C-x C-f" . counsel-find-file)
+     ("C-M-j" . counsel-switch-buffer)
+  :map minibuffer-local-map
+  ("C-r" . 'counsel-minibuffer-history))
+  :custom
+  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+  :config
+  (setq ivy-initial-inputs-alist nil))
+
+(use-package ivy
+  :commands ivy-mode
+  :init
+  (ivy-mode 1)
+  :custom
+  (ivy-height 10)
+  (ivy-fixed-height-minibuffer t)
+  :bind (("C-x b" . ivy-switch-buffer)
+       ("C-c r" . ivy-resume)
+       ("C-x C-b" . ibuffer))
+  :config
+  (setq enable-recursive-minibuffers t))
+
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
+
+(use-package all-the-icons-ivy
+  :hook
+  ((after-init . all-the-icons-ivy-setup)))
+#+end_src
+
+*** Magit
+
+#+begin_src emacs-lisp
+(use-package magit
+  :commands magit-status
+  :bind
+  ("C-x g" . magit-status))
+#+end_src
+
+*** Org
+
+#+begin_src emacs-lisp
+(use-package org
+  :custom
+  (org-startup-with-inline-images t)
+  (org-startup-folded t)
+  (org-todo-keyword-faces '(("DONE" . "GREEN")))
+  (org-hide-emphasis-markers t)
+  (org-image-actual-width nil)
+  (org-support-shift-select t)
+  (org-pretty-entities t))
+#+end_src
+
+*** Org-download
+
+#+begin_src emacs-lisp
+(use-package org-download
+  :after org
+  :hook
+  ((dired-mode . org-download-enable))
+  :custom
+  (org-download-method 'directory)
+  (org-download-image-dir "Attachments")
+  (org-download-heading-lvl nil))
+#+end_src
+
+
+*** Org-journal
+
+#+begin_src emacs-lisp
+(use-package org-journal
+  :defer t
+  :after org
+  :custom
+  (org-journal-prefix-key "C-c j")
+  (org-journal-dir "~/org/journal/")
+  (org-journal-date-format "%A, %d %B %Y"))
+#+end_src
+
+*** Org-present
+
+#+begin_src emacs-lisp
+(use-package visual-fill-column
+  :custom
+  (visual-fill-column-width 110)
+  (visual-fill-column-center-text t))
+
+(defvar display-line-numbers-old)
+
+(defun my/org-present-start ()
+  ;; Save the display line numbers value
+  (setq
+    display-line-numbers-old display-line-numbers
+    display-line-numbers nil)
+
+  ;; Show images within the buffer
+  (org-display-inline-images)
+
+  ;; Center the text
+  (visual-fill-column-mode 1)
+  (visual-line-mode 1))
+
+(defun my/org-present-end ()
+  ;; Set back the display line numbers value used before
+  (setq display-line-numbers display-line-numbers-old)
+  ;; Hide images
+
+  (org-remove-inline-images)
+  ;; Cancel the text centering
+  (visual-fill-column-mode 0)
+  (visual-line-mode 0))
+
+(use-package org-present
+  :after (visual-fill-column org)
+  :hook
+  ((org-present-mode . my/org-present-start)
+   (org-present-mode-quit . my/org-present-end)))
+#+end_src
+
+*** Org-superstar
+
+#+begin_src emacs-lisp
+(use-package org-superstar
+  :after org
+  :hook (org-mode . org-superstar-mode)
+  :custom
+  (org-superstar-remove-leading-stars t)
+  (org-superstar-headline-bullets-list '("⁖" "✿" "▷" "✸")))
+#+end_src
+
+*** PDF tools
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
+#+end_src
+
+*** Rainbow delimiters
+
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+*** Rg
+
+#+begin_src emacs-lisp
+(use-package rg)
+#+end_src
+
+*** Treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :bind (("M-²" . treemacs-select-window)
+	 ("M-0" . treemacs-select-window)))
+#+end_src
+
+*** Vertico
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :bind (:map vertico-map
+	 ("C-j" . vertico-next)
+	 ("C-k" . vertico-previous)
+	 ("C-f" . vertico-exit)
+	 :map minibuffer-local-map
+	 ("M-h" . backward-kill-word))
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :after vertico
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :init
+  (marginalia-mode))
+#+end_src
+
+*** Vterm
+
+#+begin_src emacs-lisp
+(use-package vterm
+ :commands vterm
+ :custom
+ (vterm-always-compile-module t)
+ (term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+ (vterm-shell "fish")
+ (vterm-max-scrollback 10000))
+#+end_src
+
+*** Markdown
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :custom
+  (markdown-command "pandoc"))
+#+end_src
+
+*** YAML
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (("\\.yml\\'" . yaml-mode)
+	 ("\\.yaml\\'" . yaml-mode)))
+#+end_src
+
+*** LSP mode
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :hook
+  ((prog-mode . yas-minor-mode))
+  :config
+  (yas-reload-all))
+
+(declare-function yas-reload-all "yasnippet")
+
+(use-package company
+  :config
+  (global-company-mode)
+  :custom
+  (company-idle-delay 0)
+  (company-echo-delay 0)
+  (company-minimum-prefix-length 1))
+
+(use-package company-box
+  :after company
+  :if (display-graphic-p)
+  :custom
+  (company-box-frame-behavior 'point)
+  (company-box-show-single-candidate t)
+  (company-box-doc-delay 1))
+
+(use-package lsp-mode
+  :config
+  (add-to-list 'load-path (expand-file-name "lib/lsp-mode" user-emacs-directory))
+  (add-to-list 'load-path (expand-file-name "lib/lsp-mode/clients" user-emacs-directory))
+  :hook
+  ((sh-mode . lsp))
+  :commands lsp
+  :custom
+  (lsp-headerline-breadcrumb-icons-enable nil))
+
+(use-package lsp-ivy
+  :after lsp-mode
+  :commands lsp-ivy-workspace-symbol)
+
+(use-package lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode)
+
+(use-package lsp-treemacs
+  :after lsp-mode
+  :config
+  (lsp-treemacs-sync-mode 1))
+#+end_src
+
+*** Docker
+
+#+begin_src emacs-lisp
+(use-package dockerfile-mode
+  :hook
+  ((dockerfile-mode . lsp))
+  :mode "\\Dockerfile?$"
+  :config
+  (put 'dockerfile-image-name 'safe-local-variable #'stringp))
+#+end_src
+
+*** Python
+
+#+begin_src emacs-lisp
+(use-package lsp-pyright
+  :custom (lsp-pyright-langserver-command "pyright")
+  :hook (python-mode . (lambda ()
+			  (require 'lsp-pyright)
+			  (lsp))))
+#+end_src
+
+*** Go
+
+#+begin_src emacs-lisp
+(use-package go-mode
+  :hook (go-mode . lsp))
+#+end_src
+
+*** Nix
+
+#+begin_src emacs-lisp
+(use-package nix-mode
+  :hook
+  (nix-mode . lsp)
+  :mode "\\.nix\\'"
+  :custom
+  (lsp-nix-nixd-server-path "nixd")
+  (lsp-nix-nixd-formatting-command [ "nixfmt" ])
+  (lsp-nix-nixd-nixpkgs-expr "import <nixpkgs> { }"))
+#+end_src
+
+*** Terraform
+
+#+begin_src emacs-lisp
+(use-package terraform-mode
+  :hook ((terraform-mode . lsp-deferred)
+       (terraform-mode . terraform-format-on-save-mode))
+  :mode "\\.tf\\'")
+#+end_src
