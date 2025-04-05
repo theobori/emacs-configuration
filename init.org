@@ -1,5 +1,7 @@
 * My Emacs literate configuration
 
+[[https://github.com/theobori/emacs-configuration/actions/workflows/build.yml][https://github.com/theobori/emacs-configuration/actions/workflows/build.yml/badge.svg]]
+
 This GitHub repository contains my Emacs configuration in literary form. I find this a more suitable format for exposing and explaining the configuration of a text-editing application such as Emacs.
 
 All Emacs LISP expressions in this document were written for Emacs version 29.4.
