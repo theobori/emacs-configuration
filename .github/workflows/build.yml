@@ -1,0 +1,19 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 29.4
+      - name: Install dependencies
+        run: sudo apt install libtool libvterm-dev -y
+      - name: Load, install packages and compile
+        run: make
