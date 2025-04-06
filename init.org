@@ -8,9 +8,9 @@ All Emacs LISP expressions in this document were written for Emacs version 29.4.
 
 ** Why does this repository exist?
 
-I use [[https:nixos.org][NixOS]] as my main operating system, my [[https:nixos.org][NixOS]] configuration is very modularized, which includes [[https:github.com/theobori/nixos-configuration/blob/main/modules/home/editors/emacs][Emacs configuration]]. It is written solely through Nix expressions, which are themselves written through the [[https:nixos.org][NixOS]] Emacs home-manager module.
+I use [[https://nixos.org][NixOS]] as my main operating system, my [[https://nixos.org][NixOS]] configuration is very modularized, which includes [[https://github.com/theobori/nixos-configuration/blob/main/modules/home/editors/emacs][Emacs configuration]]. It is written solely through Nix expressions, which are themselves written through the [[https://nixos.org][NixOS]] Emacs home-manager module.
 
-The aim of this repository is to be able to use my configuration on any non-Nix distribution, i.e. without needing to build a derivation or evaluate NixOS modules.
+The aim of this repository is to be able to use my configuration on any non-Nix distribution, i.e. without needing to build a derivation or evaluate [[https://nixos.org][NixOS]] modules.
 
 It is therefore a KISS way of distributing my configuration.
 
@@ -28,7 +28,7 @@ You could need to run the command line above one more time if Emacs were not abl
 
 ** How does it work?
 
-All the code blocks in this Org file containing Emacs LISP expressions will be collected and written to a =init.el= file. This file will be compiled by the Emacs application and the result of the compilation will be written in a file =init.elc= and installed in the directory =~/.emacs.d=.
+All the code blocks in this Org file containing Emacs LISP expressions will be collected and written to a =init.el= file. This file will be loaded and compiled by the Emacs application and the result of the compilation will be written in a file =init.elc= and installed in the directory =~/.emacs.d=.
 
 ** My configuration
 
@@ -36,7 +36,7 @@ This section describes my entire configuration.
 
 *** Package management
 
-I use [[https:github.com/radian-software/straight.el][straight.el]] as my main package manager. This makes it easier for me to retrieve packages that aren't in the official package archives. It's still possible to retrieve packages from [[https:melpa.org][MELPA]] and [[https:elpa.gnu.org][ELPA]] but from [[https:github.com/radian-software/straight.el][straight.el]].
+I use [[https://github.com/radian-software/straight.el][straight.el]] as my main package manager. This makes it easier for me to retrieve packages that aren't in the official package archives. It's still possible to retrieve packages from [[https://melpa.org][MELPA]] and [[https://elpa.gnu.org][ELPA]] but from [[https://github.com/radian-software/straight.el][straight.el]].
 
 The package greatly facilitates my package management and allows me to have an even more reproducible and detailed configuration.
 
@@ -114,7 +114,7 @@ Below is the general configuration of some general Emacs behaviors and customiza
 
 *** Style
 
-I use the [[https:www.monolisa.dev][MonoLisa]] font patched to accommodate the [[https:www.nerdfonts.com][Nerd]] font. There is this [[https:github.com/daylinmorgan/monolisa-nerdfont-patch][GitHub repository]] to patch [[https:www.monolisa.dev][MonoLisa]].
+I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the [[https://www.nerdfonts.com][Nerd]] font. There is this [[https://github.com/daylinmorgan/monolisa-nerdfont-patch][GitHub repository]] to patch [[https://www.monolisa.dev][MonoLisa]].
 
 #+begin_src emacs-lisp
 (defvar base16-dracula-theme-colors
@@ -256,8 +256,7 @@ I use the [[https:www.monolisa.dev][MonoLisa]] font patched to accommodate the [
   :custom
   (ivy-height 10)
   (ivy-fixed-height-minibuffer t)
-  :bind (("C-x b" . ivy-switch-buffer)
-       ("C-c r" . ivy-resume)
+  :bind (("C-c r" . ivy-resume)
        ("C-x C-b" . ibuffer))
   :config
   (setq enable-recursive-minibuffers t))
@@ -305,7 +304,6 @@ I use the [[https:www.monolisa.dev][MonoLisa]] font patched to accommodate the [
   (org-download-image-dir "Attachments")
   (org-download-heading-lvl nil))
 #+end_src
-
 
 *** Org-journal
 
@@ -428,7 +426,7 @@ I use the [[https:www.monolisa.dev][MonoLisa]] font patched to accommodate the [
 
 *** Vterm
 
-See the [[https:github.com/akermu/emacs-libvterm][emacs-libvterm GitHub repository]] if you need to install the dependencies.
+See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub repository]] if you need to install the dependencies.
 
 #+begin_src emacs-lisp
 (use-package vterm
