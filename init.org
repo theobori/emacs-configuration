@@ -506,7 +506,6 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
   :commands lsp-ui-mode)
 
 (use-package lsp-treemacs
-  :after lsp-mode
   :config
   (lsp-treemacs-sync-mode 1))
 #+end_src
