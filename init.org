@@ -114,7 +114,7 @@ Below is the general configuration of some general Emacs behaviors and customiza
 
 *** Style
 
-I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the [[https://www.nerdfonts.com][Nerd]] font. There is this [[https://github.com/daylinmorgan/monolisa-nerdfont-patch][GitHub repository]] to patch [[https://www.monolisa.dev][MonoLisa]].
+I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the [[https://www.nerdfonts.com][Nerd]] font (sometime without). There is this [[https://github.com/daylinmorgan/monolisa-nerdfont-patch][GitHub repository]] to patch [[https://www.monolisa.dev][MonoLisa]].
 
 #+begin_src emacs-lisp
 (defvar base16-dracula-theme-colors
@@ -158,6 +158,26 @@ I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the
 (set-face-attribute 'default t :font (font-spec :size 11.000000))
 ;; Set opacity
 (add-to-list 'default-frame-alist '(alpha-background . 100))
+
+
+(use-package ligature
+  :config
+  (ligature-set-ligatures 't '("www"))
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+				       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+				       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+				       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+				       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+				       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+				       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+				       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+				       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+				       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+				       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+				       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+				       "\\\\" "://"))
+  (global-ligature-mode t))
 #+end_src
 
 *** Auto save
