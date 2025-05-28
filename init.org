@@ -87,9 +87,9 @@ Below is the general configuration of some general Emacs behaviors and customiza
       (tool-bar-mode -1)
       (scroll-bar-mode -1)))
 
-(global-display-line-numbers-mode)
 (setq standard-indent 2)
 (setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; See https://snarfed.org/gnu_emacs_backup_files
 (custom-set-variables
@@ -345,26 +345,15 @@ I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the
   (visual-fill-column-width 110)
   (visual-fill-column-center-text t))
 
-(defvar display-line-numbers-old)
-
 (defun my/org-present-start ()
-  ;; Save the display line numbers value
-  (setq
-    display-line-numbers-old display-line-numbers
-    display-line-numbers nil)
-
   ;; Show images within the buffer
   (org-display-inline-images)
-
   ;; Center the text
   (visual-fill-column-mode 1)
   (visual-line-mode 1))
 
 (defun my/org-present-end ()
-  ;; Set back the display line numbers value used before
-  (setq display-line-numbers display-line-numbers-old)
   ;; Hide images
-
   (org-remove-inline-images)
   ;; Cancel the text centering
   (visual-fill-column-mode 0)
@@ -482,52 +471,52 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
 *** LSP mode
 
 #+begin_src emacs-lisp
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :hook
-  ((prog-mode . yas-minor-mode))
-  :config
-  (yas-reload-all))
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :config
+    (yas-reload-all)
+    (yas-gobal-mode 1))
 
-(declare-function yas-reload-all "yasnippet")
+  (declare-function yas-reload-all "yasnippet")
 
-(use-package company
-  :config
-  (global-company-mode)
-  :custom
-  (company-idle-delay 0)
-  (company-echo-delay 0)
-  (company-minimum-prefix-length 1))
+  (use-package company
+    :config
+    (global-company-mode)
+    :custom
+    (company-idle-delay 0)
+    (company-echo-delay 0)
+    (company-minimum-prefix-length 1))
 
-(use-package company-box
-  :after company
-  :if (display-graphic-p)
-  :custom
-  (company-box-frame-behavior 'point)
-  (company-box-show-single-candidate t)
-  (company-box-doc-delay 1))
+  (use-package company-box
+    :after company
+    :if (display-graphic-p)
+    :custom
+    (company-box-frame-behavior 'point)
+    (company-box-show-single-candidate t)
+    (company-box-doc-delay 1))
 
-(use-package lsp-mode
-  :config
-  (add-to-list 'load-path (expand-file-name "lib/lsp-mode" user-emacs-directory))
-  (add-to-list 'load-path (expand-file-name "lib/lsp-mode/clients" user-emacs-directory))
-  :hook
-  ((sh-mode . lsp))
-  :commands lsp
-  :custom
-  (lsp-headerline-breadcrumb-icons-enable nil))
+  (use-package lsp-mode
+    :config
+    (add-to-list 'load-path (expand-file-name "lib/lsp-mode" user-emacs-directory))
+    (add-to-list 'load-path (expand-file-name "lib/lsp-mode/clients" user-emacs-directory))
+    :hook
+    ((sh-mode . lsp)
+     (tex-mode . lsp))
+    :commands lsp
+    :custom
+    (lsp-headerline-breadcrumb-icons-enable nil))
 
-(use-package lsp-ivy
-  :after lsp-mode
-  :commands lsp-ivy-workspace-symbol)
+  (use-package lsp-ivy
+    :after lsp-mode
+    :commands lsp-ivy-workspace-symbol)
 
-(use-package lsp-ui
-  :after lsp-mode
-  :commands lsp-ui-mode)
+  (use-package lsp-ui
+    :after lsp-mode
+    :commands lsp-ui-mode)
 
-(use-package lsp-treemacs
-  :config
-  (lsp-treemacs-sync-mode 1))
+  (use-package lsp-treemacs
+    :config
+    (lsp-treemacs-sync-mode 1))
 #+end_src
 
 *** Docker
