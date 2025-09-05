@@ -91,6 +91,9 @@ Below is the general configuration of some general Emacs behaviors and customiza
 (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
+;; Needed to request GPG passphrase with Emacs
+(setq epa-pinentry-mode 'loopback)
+
 ;; See https://snarfed.org/gnu_emacs_backup_files
 (custom-set-variables
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
