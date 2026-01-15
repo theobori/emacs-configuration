@@ -203,25 +203,26 @@ I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the
 *** Dashboard
 
 #+begin_src emacs-lisp
-(use-package all-the-icons)
-(use-package dashboard
-  :after (all-the-icons)
-  :init (dashboard-setup-startup-hook)
-  :if (or (display-graphic-p) (and (not (daemonp))
-	  (= (length command-line-args) 1)))
-  :custom
-  (dashboard-startup-banner 'logo)
-  (dashboard-center-content t)
-  (dashboard-set-navigator t)
-  (dashboard-icon-type 'all-the-icons)
-  (dashboard-items '((projects . 5)
-	      (recents  . 5)))
-  (dashboard-set-file-icons t)
-  (dashboard-projects-backend 'project-el)
-  :config
-  (setq initial-buffer-choice (lambda ()
-			  (get-buffer-create "*dashboard*")
-			  (dashboard-refresh-buffer))))
+  (use-package all-the-icons)
+  (use-package dashboard
+    :after (all-the-icons)
+    :init (dashboard-setup-startup-hook)
+    :if (or (display-graphic-p) (and (not (daemonp))
+  	  (= (length command-line-args) 1)))
+    :custom
+    (dashboard-startup-banner 'logo)
+    (dashboard-center-content t)
+    (dashboard-set-navigator t)
+    (dashboard-icon-type 'all-the-icons)
+    (dashboard-items '((projects . 5)
+  	      (recents  . 5)
+  	      (agenda . 5)))
+    (dashboard-set-file-icons t)
+    (dashboard-projects-backend 'project-el)
+    :config
+    (setq initial-buffer-choice (lambda ()
+  			  (get-buffer-create "*dashboard*")
+  			  (dashboard-refresh-buffer))))
 #+end_src
 
 *** Dired
@@ -268,15 +269,16 @@ I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the
 *** Org
 
 #+begin_src emacs-lisp
-(use-package org
-  :custom
-  (org-startup-with-inline-images t)
-  (org-startup-folded t)
-  (org-todo-keyword-faces '(("DONE" . "GREEN")))
-  (org-hide-emphasis-markers t)
-  (org-image-actual-width nil)
-  (org-support-shift-select t)
-  (org-pretty-entities t))
+  (use-package org
+    :custom
+    (org-startup-with-inline-images t)
+    (org-startup-folded t)
+    (org-todo-keyword-faces '(("DONE" . "GREEN")))
+    (org-hide-emphasis-markers t)
+    (org-image-actual-width nil)
+    (org-support-shift-select t)
+    (org-pretty-entities t)
+    (org-agenda-files '("~/.emacs-org-agenda")))
 #+end_src
 
 *** Org-download
