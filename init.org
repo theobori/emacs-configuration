@@ -605,6 +605,16 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
 	 ("\\.yaml\\'" . yaml-mode)))
 #+end_src
 
+*** Sphinx mode
+
+#+begin_src emacs-lisp
+(use-package sphinx-doc
+  :hook
+  (python-mode . sphinx-doc-mode)
+  :custom
+  (sphinx-doc-include-types t))
+#+end_src
+
 *** LSP mode
 
 #+begin_src emacs-lisp
