@@ -615,6 +615,14 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
   (sphinx-doc-include-types t))
 #+end_src
 
+*** Tldr
+
+#+begin_src emacs-lisp
+(use-package tldr)
+#+end_src
+
+
+
 *** LSP mode
 
 #+begin_src emacs-lisp
