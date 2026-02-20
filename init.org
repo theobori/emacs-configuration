@@ -621,7 +621,15 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
 (use-package tldr)
 #+end_src
 
+*** Multiple cursors
 
+#+begin_src emacs-lisp
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)))
+#+end_src
 
 *** LSP mode
 
