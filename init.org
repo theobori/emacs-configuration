@@ -629,6 +629,17 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
          ("C-c C-<" . mc/mark-all-like-this)))
 #+end_src
 
+*** Elfeed
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :custom
+  (elfeed-feeds '("https://www.journalduhacker.net/rss"
+		  "https://tilde.news/rss"
+		  "https://lobste.rs/rss"
+		  "https://news.ycombinator.com/rss")))
+#+end_src
+
 *** LSP mode
 
 #+begin_src emacs-lisp
