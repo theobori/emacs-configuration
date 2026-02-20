@@ -79,13 +79,12 @@ Below is the general configuration of some general Emacs behaviors and customiza
 ;; Remove the menu bar
 (menu-bar-mode -1)
 
-(if (display-graphic-p)
-    (progn
-      ;; Resize small font on the GUI Emacs application
-      (set-face-attribute 'default nil :height 105)
-      ;; Annoying displayed UI elements
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1)))
+(when (display-graphic-p)
+  ;; Resize small font on the GUI Emacs application
+  (set-face-attribute 'default nil :height 105)
+  ;; Annoying displayed UI elements
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1))
 
 (setq standard-indent 2)
 (setq display-line-numbers-type 'relative)
@@ -155,13 +154,12 @@ I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the
 
 ;; Load the font if it exist
 (let ((my-font "MonoLisa Nerd Font"))
-  (if (find-font (font-spec :name my-font))
+  (when (find-font (font-spec :name my-font))
       (set-frame-font my-font)))
 ;; Set font size
 (set-face-attribute 'default t :font (font-spec :size 11.000000))
 ;; Set opacity
 (add-to-list 'default-frame-alist '(alpha-background . 100))
-
 
 (use-package ligature
   :config

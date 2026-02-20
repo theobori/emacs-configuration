@@ -16,4 +16,4 @@ jobs:
       - name: Install dependencies
         run: sudo apt install libtool libvterm-dev -y
       - name: Load, install packages and compile
-        run: make
+        run: make install
