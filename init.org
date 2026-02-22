@@ -749,3 +749,13 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
    (typescript-mode . lsp)
    :mode "\\.ts?$")
 #+end_src
+
+*** C, C++, Objective-C
+
+#+begin_src emacs-lisp
+  (use-package ccls
+    :hook
+    ((c-mode . lsp)
+     (c++-mode . lsp)
+     (objc-mode . lsp)))
+#+end_src
