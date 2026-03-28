@@ -640,6 +640,16 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
 		  "https://news.ycombinator.com/rss")))
 #+end_src
 
+*** qBittorrent-transient
+
+This Emacs package requires [[https://www.qbittorrent.org/][qBittorrent]].
+
+#+begin_src emacs-lisp
+(use-package qbittorrent-transient
+  :straight (qbittorrent-transient :type git :host github :repo "theobori/qbittorrent-transient"))
+#+end_src
+
+
 *** LSP mode
 
 #+begin_src emacs-lisp
