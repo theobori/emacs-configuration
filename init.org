@@ -624,9 +624,16 @@ See the [[https://github.com/akermu/emacs-libvterm][emacs-libvterm GitHub reposi
 #+begin_src emacs-lisp
 (use-package multiple-cursors
   :bind (("C-S-c C-S-c" . mc/edit-lines)
-         ("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-c C-<" . mc/mark-all-like-this)))
+       ("C->" . mc/mark-next-like-this)
+       ("C-<" . mc/mark-previous-like-this)
+       ("C-c C-<" . mc/mark-all-like-this)))
+
+(use-package multiple-cursors-core
+  :after multiple-cursors
+  :straight nil
+  :bind (:map mc/keymap
+      ("<return>" . nil)
+      ("C-<return>" . multiple-cursors-mode)))
 #+end_src
 
 *** Elfeed
@@ -763,9 +770,9 @@ This Emacs package requires [[https://www.qbittorrent.org/][qBittorrent]].
 *** C, C++, Objective-C
 
 #+begin_src emacs-lisp
-  (use-package ccls
-    :hook
-    ((c-mode . lsp)
-     (c++-mode . lsp)
-     (objc-mode . lsp)))
+(use-package ccls
+  :hook
+  ((c-mode . lsp)
+   (c++-mode . lsp)
+   (objc-mode . lsp)))
 #+end_src
