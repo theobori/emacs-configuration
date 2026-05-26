@@ -656,6 +656,16 @@ This Emacs package requires [[https://www.qbittorrent.org/][qBittorrent]].
   :straight (qbittorrent-transient :type git :host github :repo "theobori/qbittorrent-transient"))
 #+end_src
 
+*** Grip
+
+This Emacs package requires [[https://github.com/chrishrb/go-grip][go-grip]] if you keep it as below.
+
+#+begin_src emacs-lisp
+(use-package grip-mode
+  :config (setq grip-command 'go-grip)
+  :bind (:map markdown-mode-command-map
+	 ("g" . grip-mode)))
+#+end_src
 
 *** LSP mode
 
