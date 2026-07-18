@@ -74,7 +74,8 @@ Below is the general configuration of some general Emacs behaviors and customiza
 #+begin_src emacs-lisp
 (global-auto-revert-mode 1)
 (show-paren-mode t)
-(defalias 'yes-or-no-p 'y-or-n-p)
+(setq use-short-answers t
+      show-trailing-whitespace t)
 
 ;; Remove the menu bar
 (menu-bar-mode -1)
@@ -82,21 +83,25 @@ Below is the general configuration of some general Emacs behaviors and customiza
 (when (display-graphic-p)
   ;; Resize small font on the GUI Emacs application
   (set-face-attribute 'default nil :height 105)
+
   ;; Annoying displayed UI elements
   (tool-bar-mode -1)
   (scroll-bar-mode -1))
 
-(setq standard-indent 2)
 (setq display-line-numbers-type 'relative)
+(setq standard-indent 2)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Needed to request GPG passphrase with Emacs
 (setq epg-pinentry-mode 'loopback)
 
+;; Disable the ring bell sound
+(setq ring-bell-function 'ignore)
+
 ;; See https://snarfed.org/gnu_emacs_backup_files
 (custom-set-variables
- '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
- '(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
+  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
+  '(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
 
 (make-directory "~/.emacs.d/autosaves/" t)
 
@@ -104,12 +109,17 @@ Below is the general configuration of some general Emacs behaviors and customiza
 
 ;; See https://themkat.net/2025/03/25/simple_smoother_emacs_scrolling.html
 (setq scroll-conservatively 10
-      scroll-margin 15)
+  scroll-margin 15)
 
 (setq inhibit-startup-screen t)
 
+;; Better and cool behaviors
+(electric-pair-mode 1)
+(global-hl-line-mode 1)
+(delete-selection-mode 1)
+
 ;; Run Emacs server
-(require 'server)
+(use-package server :ensure nil)
 (unless (server-running-p)
   (server-start))
 #+end_src
