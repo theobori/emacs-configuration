@@ -129,38 +129,9 @@ Below is the general configuration of some general Emacs behaviors and customiza
 I use the [[https://www.monolisa.dev][MonoLisa]] font patched to accommodate the [[https://www.nerdfonts.com][Nerd]] font (sometime without). There is this [[https://github.com/daylinmorgan/monolisa-nerdfont-patch][GitHub repository]] to patch [[https://www.monolisa.dev][MonoLisa]].
 
 #+begin_src emacs-lisp
-(defvar base16-dracula-theme-colors
-  '(:base00 "#282936"
-    :base01 "#3a3c4e"
-    :base02 "#4d4f68"
-    :base03 "#626483"
-    :base04 "#62d6e8"
-    :base05 "#e9e9f4"
-    :base06 "#f1f2f8"
-    :base07 "#f7f7fb"
-    :base08 "#ea51b2"
-    :base09 "#b45bcf"
-    :base0A "#00f769"
-    :base0B "#ebff87"
-    :base0C "#a1efe4"
-    :base0D "#62d6e8"
-    :base0E "#b45bcf"
-    :base0F "#00f769")
-  "All colors for Base16 dracula are defined here.")
-
-;; Define the theme
-(deftheme base16-dracula)
-
-(use-package base16-theme
-  :custom
-  (base16-theme-256-color-source 'colors)
+(use-package dracula-theme
   :config
-  ;; Add all the faces to the theme
-  (base16-theme-define 'base16-dracula base16-dracula-theme-colors)
-  ;; Mark the theme as provided
-  (provide-theme 'base16-dracula)
-  ;; Load the theme
-  (load-theme 'base16-dracula t))
+  (load-theme 'dracula t))
 
 ;; Load the font if it exist
 (let ((my-font "MonoLisa Nerd Font"))
